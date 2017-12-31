@@ -1,18 +1,19 @@
 module.exports = {   
     roads: function() {
         // TODO: erst nach mindestens 5 extensions
-        var roadName = "spawnToSource2";
+        var roadName = "controllerToSource2";
         if (typeof Memory.roads == "undefined"){
-            Memory.roads.spawnToSource2 = false;
+            Memory.roads.controllerToSource2 = false;
         }
-        if (Memory.roads.spawnToSource2 == true) {
+        if (Memory.roads.controllerToSource2 == true) {
             return;
         }
-        var xpos = Game.spawns.Spawn1.pos;
-        xpos.y = xpos.y - 1;
+        // var xpos = Game.spawns.Spawn1.pos;
+        // xpos.y = xpos.y - 1;
         var waypoints = Game.spawns.Spawn1.room.findPath(
-            xpos,
-            Game.spawns.Spawn1.room.find(FIND_SOURCES_ACTIVE)[1].pos
+            Game.spawns.Spawn1.room.controller.pos,
+            Game.spawns.Spawn1.room.find(FIND_SOURCES_ACTIVE)[0].pos,
+            {"ignoreCreeps": true}
         );
         waypoints.forEach(
             function(waypoint){
@@ -23,7 +24,7 @@ module.exports = {
                 );
             }
         );
-        Memory.roads.spawnToSource2 = true;
+        Memory.roads.controllerToSource2 = true;
     },
     extensions: function() {
         if (

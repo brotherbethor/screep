@@ -12,7 +12,7 @@ module.exports.loop = function () {
     status.globalState();
     cleaner.tick();
     buildup.extensions();
-    // buildup.roads();
+    buildup.roads();
 
     if(Game.spawns['Spawn1'].spawning) { 
         var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];
