@@ -11,8 +11,7 @@ module.exports = {
 	    		"construction_sites_extensions": Game.spawns.Spawn1.room.find(FIND_CONSTRUCTION_SITES, {filter: {structureType: STRUCTURE_EXTENSION}}).length,
 	    		"construction_sites_roads": Game.spawns.Spawn1.room.find(FIND_CONSTRUCTION_SITES, {filter: {structureType: STRUCTURE_ROAD}}).length,
 	    		"construction_sites": Game.spawns.Spawn1.room.find(FIND_CONSTRUCTION_SITES).length,
-	    		"rcl": Game.spawns.Spawn1.room.controller.level,
-	    		"sources_active": Game.spawns.Spawn1.room.find(FIND_SOURCES_ACTIVE)
+	    		"rcl": Game.spawns.Spawn1.room.controller.level
     		}
     	Memory.current_state = current_state;
     	if (Game.time % 10 == 0) {
