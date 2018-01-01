@@ -39,6 +39,7 @@ var roleAll = {
         };
         var desired_number = desired_numbers[role];
         var profiles = [
+            [550, [WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE]],
             [500, [WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE]],
             [400, [WORK,WORK,CARRY,CARRY,MOVE,MOVE]],
             [300, [WORK,CARRY,CARRY,MOVE,MOVE]]
