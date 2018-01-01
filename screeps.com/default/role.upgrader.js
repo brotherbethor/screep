@@ -13,7 +13,7 @@ var roleUpgrader = {
     },
     run: function(creep) {
         if(creep.carry.energy == 0) {
-            var sources = Memory.current_state["sources"];
+            var sources = Game.spawns.Spawn1.room.find(FIND_SOURCES_ACTIVE);
             if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(sources[0]);
             }
