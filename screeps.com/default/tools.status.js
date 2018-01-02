@@ -1,17 +1,18 @@
 module.exports = {
     globalState: function(){
     		var current_state = {
-	    		"energy_available": Game.spawns.Spawn1.room.energyAvailable,
-	    		"energy_capacity": Game.spawns.Spawn1.room.energyCapacityAvailable,
-	    		"builders": _.filter(Game.creeps, (creep) => creep.memory.role == "builder").length,
-	    		"harvesters": _.filter(Game.creeps, (creep) => creep.memory.role == "harvester").length,
-	    		"upgraders": _.filter(Game.creeps, (creep) => creep.memory.role == "upgrader").length,
-	    		"extensions": Game.spawns.Spawn1.room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_EXTENSION}}).length,
-	    		"roads": Game.spawns.Spawn1.room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_ROAD}}).length,
-	    		"construction_sites_extensions": Game.spawns.Spawn1.room.find(FIND_CONSTRUCTION_SITES, {filter: {structureType: STRUCTURE_EXTENSION}}).length,
-	    		"construction_sites_roads": Game.spawns.Spawn1.room.find(FIND_CONSTRUCTION_SITES, {filter: {structureType: STRUCTURE_ROAD}}).length,
-	    		"construction_sites": Game.spawns.Spawn1.room.find(FIND_CONSTRUCTION_SITES).length,
-	    		"rcl": Game.spawns.Spawn1.room.controller.level
+	    		'energy_available': Game.spawns.Spawn1.room.energyAvailable,
+	    		'energy_capacity': Game.spawns.Spawn1.room.energyCapacityAvailable,
+	    		'builders': _.filter(Game.creeps, (creep) => creep.memory.role == "builder").length,
+	    		'harvesters': _.filter(Game.creeps, (creep) => creep.memory.role == "harvester").length,
+	    		'upgraders': _.filter(Game.creeps, (creep) => creep.memory.role == "upgrader").length,
+	    		'extensions': Game.spawns.Spawn1.room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_EXTENSION}}).length,
+	    		'roads': Game.spawns.Spawn1.room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_ROAD}}).length,
+	    		'construction_sites_extensions': Game.spawns.Spawn1.room.find(FIND_CONSTRUCTION_SITES, {filter: {structureType: STRUCTURE_EXTENSION}}).length,
+	    		'construction_sites_roads': Game.spawns.Spawn1.room.find(FIND_CONSTRUCTION_SITES, {filter: {structureType: STRUCTURE_ROAD}}).length,
+	    		'construction_sites': Game.spawns.Spawn1.room.find(FIND_CONSTRUCTION_SITES).length,
+	    		'rcl': Game.spawns.Spawn1.room.controller.level,
+	    		'pokemon_index': typeof Memory.current_state.pokemon_index == 'undefined' ? 0 : Memory.current_state.pokemon_index
     		}
     	Memory.current_state = current_state;
     	if (Game.time % 10 == 0) {
