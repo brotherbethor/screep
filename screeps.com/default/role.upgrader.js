@@ -17,8 +17,7 @@ var roleUpgrader = {
             if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(sources[0]);
             }
-        }
-        else {
+        } else {
             if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.controller);
             }
@@ -26,6 +25,7 @@ var roleUpgrader = {
         if (creep.ticksToLive <= 10) {
             console.log("about to die in " + creep.ticksToLive + " ticks: " + creep.name);
         }
+        if (creep.ticksToLive == 1) { creep.say('💥 bye bye');}
         // roleAll.buildRoad(creep);
     }
 };

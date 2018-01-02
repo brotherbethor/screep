@@ -1,5 +1,29 @@
 var pokenames = require('names.pokemon');
 
+var creeper_build_order = ['harvester', 'upgrader', 'builder'];
+
+var creeper_numbers_per_rcl = {
+    1:{ 'harvester': 3,
+        'upgrader': 7,
+        'builder': 0},
+    2:{ 'harvester': 3, 
+        'upgrader': 3,
+        'builder': 4}
+};
+
+function next_creeper_type_to_build(){
+    if (typeof Memory.last_built_creeper == 'undefined'){
+        Memory.last_built_creeper = 0;
+        return 'harvester';
+    }
+    var build_index = Memory.last_built_creeper + 1;
+    if (build_index == creeper_build_order.length) {
+        build_index = 0;
+    }
+    Memory.last_built_creeper = build_index;
+    return creeper_build_order[build_index];
+}
+
 function creepers_type_change(creepers, new_type){
     creepers.forEach(function(creeper){
         var old_type = creeper.memory.role;
@@ -38,7 +62,9 @@ var roleAll = {
         var desired_harvesters = 3;
 
         // when there is nothing to build, create more upgraders
-        if (no_construction_sites) {
+        // TODO better way to handle 0 harvesters ...
+        // harvesters are the most important thing so far
+        if ((no_construction_sites) && (harvesters.length > (desired_harvesters -1))) {
             if (builders.length > 0) {
                 creepers_type_change(builders, 'upgrader');
             }

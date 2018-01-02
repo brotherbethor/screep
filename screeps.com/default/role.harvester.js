@@ -30,6 +30,7 @@ var roleHarvester = {
         if (creep.ticksToLive <= 10) {
             console.log("about to die in " + creep.ticksToLive + " ticks: " + creep.name);
         }
+        if (creep.ticksToLive == 1) { creep.say('💥 bye bye');}
     }
 };
 
