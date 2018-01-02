@@ -2,13 +2,14 @@ var pokenames = require('names.pokemon');
 
 var creeper_build_order = ['harvester', 'upgrader', 'builder'];
 
+// [max, min] in normal situations
 var creeper_numbers_per_rcl = {
-    1:{ 'harvester': 3,
-        'upgrader': 7,
-        'builder': 0},
-    2:{ 'harvester': 3, 
-        'upgrader': 3,
-        'builder': 4}
+    1:{ 'harvester': [3, 1],
+        'upgrader': [7, 1],
+        'builder': [0, 0]},
+    2:{ 'harvester': [3, 1], 
+        'upgrader': [3, 1],
+        'builder': [4, 0]}
 };
 
 function next_creeper_type_to_build(){
