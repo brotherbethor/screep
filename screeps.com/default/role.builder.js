@@ -26,8 +26,8 @@ var roleBuilder = {
         }
         if (creep.ticksToLive <= 10) {
             console.log("about to die in " + creep.ticksToLive + " ticks: " + creep.name);
+            creep.say('💥 bye bye');
         }
-        if (creep.ticksToLive == 1) { creep.say('💥 bye bye');}
     }
 };
 
