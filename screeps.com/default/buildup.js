@@ -26,7 +26,6 @@ module.exports = {
     roads: function() {
         if (typeof Memory.roads_built == 'undefined') {
             Memory.roads_built = 0;
-            Memory.road_building_max = 5;
             Memory.road_building_probability = 0.999; // rebuild every 1000 ticks or so
             console.log('Initialized road building data.');
         } else {
@@ -36,6 +35,7 @@ module.exports = {
                     (Math.random() >= Memory.road_building_probability)) {
                     var roads = road_data();
                     for (var road_name in roads) {
+                        console.log(road_name + 'is a road');
                         var coordinates = roads[road_name];
                         var origin = coordinates['from'];
                         var destination = coordinates['to'];
@@ -44,6 +44,7 @@ module.exports = {
                             destination.pos,
                             {'ignoreCreeps': true} // only ever build the default roads
                         );
+                        console.log('waypoints: ' + waypoints.length);
                         waypoints.forEach(
                             function(waypoint){
                                 Game.spawns.Spawn1.room.createConstructionSite(
