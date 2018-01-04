@@ -1,3 +1,5 @@
+var extension_coordinates = require('positions.extensions');
+
 function road_data(){
     var spawn = Game.spawns.Spawn1;
     var controller = Game.spawns.Spawn1.room.controller;
@@ -68,10 +70,14 @@ module.exports = {
             (Memory.current_state['rcl'] == 2) && 
             (Memory.current_state['construction_sites_extensions'] == 0)
             ) {	
+            var extension_positions = extension_coordinates.extension_positions_2;
         	var sx = Game.spawns.Spawn1.pos.x;
     	    var sy = Game.spawns.Spawn1.pos.y;
-    	    var ex = sx - 2 + Memory.current_state['extensions'];
-    	    var ey = sy + 2;
+            var new_extension_position = extension_positions[Memory.current_state['extensions']];
+
+
+    	    var ex = new_extension_position[0] + sx;
+    	    var ey = new_extension_position[1] + sy;
     	    
             Game.spawns.Spawn1.room.createConstructionSite(
     	      	ex,ey,STRUCTURE_EXTENSION
