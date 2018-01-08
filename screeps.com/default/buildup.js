@@ -1,4 +1,16 @@
-var extension_coordinates = require('positions.extensions');
+var algorithms = require('algorithms.extensions');
+
+var extensions_by_rcl = {
+    0: 0,
+    1: 0,
+    2: 5,
+    3: 10,
+    4: 20,
+    5: 30,
+    6: 40,
+    7: 50,
+    8: 60
+}
 
 function road_data(){
     var spawn = Game.spawns.Spawn1;
@@ -64,15 +76,23 @@ module.exports = {
 
         }
     },
+
     extensions: function() {
-        if (
-            (Memory.current_state['extensions'] < 5) &&
-            (Memory.current_state['rcl'] == 2) && 
-            (Memory.current_state['construction_sites_extensions'] == 0)
-            ) {	
-            var extension_positions = extension_coordinates.extension_positions_2;
+        var rcl = Memory.current_state.rcl;
+        var extensions_count = Memory.current_state.extensions;
+        var max_extensions = extensions_by_rcl[rcl];
+        var extensions_in_building = Memory.current_state.construction_sites_extensions;
+        if ((extensions_count < max_extensions) && (extensions_in_building == 0)) {	
         	var sx = Game.spawns.Spawn1.pos.x;
     	    var sy = Game.spawns.Spawn1.pos.y;
+            var spawn_point = [Game.spawns.Spawn1.pos.x, Game.spawns.Spawn1.pos.y];
+            var radius = typeof Memory.extension_radius == 'unset' ? 1 : Memory.extension_radius;
+            while (true){
+                var build_places = algorithms.walk_around_center(spawn_point, radius, 'extensions');
+                build_places.forEach(){
+                    
+                }
+            }
             var new_extension_position = extension_positions[Memory.current_state['extensions']];
 
 
