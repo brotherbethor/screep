@@ -9,8 +9,8 @@ var roleUpgrader = {
                 creep.moveTo(sources[creep.memory.target_source]);
             }
         } else {
-            if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller);
+            if(creep.upgradeController(Game.spawns.Spawn1.room.controller) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(Game.spawns.Spawn1.room.controller);
             }
         }
         if (creep.ticksToLive <= 10) {

@@ -9,12 +9,12 @@ var roleHarvester = {
             standby_position.y +=2;
             creep.moveTo(standby_position.x, standby_position.y, {visualizePathStyle: {stroke: '#ff0000'}});
         } else if(creep.carry.energy < creep.carryCapacity) {
-            var sources = creep.room.find(FIND_SOURCES_ACTIVE);
+            var sources = Game.spawns.Spawn1.room.find(FIND_SOURCES_ACTIVE);
             if(creep.harvest(sources[creep.memory.target_source]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(sources[creep.memory.target_source], {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         } else {
-            var targets = creep.room.find(FIND_STRUCTURES, {
+            var targets = Game.spawns.Spawn1.room.find(FIND_STRUCTURES, {
                     filter: (structure) => {
                         return (structure.structureType == STRUCTURE_EXTENSION ||
                                 structure.structureType == STRUCTURE_SPAWN ||

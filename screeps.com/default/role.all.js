@@ -9,7 +9,7 @@ var creeper_numbers_per_rcl = {
         'builder': [0, 0]},
     2:{ 'harvester': [3, 1], 
         'upgrader': [3, 1],
-        'builder': [4, 0]},
+        'builder': [4, 1]},
     3:{ 'harvester': [3, 1], 
         'upgrader': [3, 1],
         'builder': [4, 0]}        
@@ -54,8 +54,7 @@ function creepers_type_change(creepers, new_type){
 
 
 var roleAll = {
-    build: function(role) {
-        // TODO ignore role
+    build: function() {
         /*
         immer mindestens einen harvester
         wenn ein harvester, dann mindestens einen upgrader
@@ -83,8 +82,6 @@ var roleAll = {
 
         function re_assign_creepers(
             no_construction_sites, upgraders, harvesters, builders, max_energy){
-
-
         }
 
         if (true) {
@@ -109,7 +106,7 @@ var roleAll = {
             		var energy_available = Memory.current_state["energy_available"];
 	            	if ((energy_available >= p_energy) && (spawned == false)) {
                         if (Memory.current_state.pokemon_index == pokemon_names.length) {Memory.current_state.pokemon_index = 0;}
-			            var newName = pokemon_names[Memory.current_state.pokemon_index]+ Game.time;
+			            var newName = pokemon_names[Memory.current_state.pokemon_index];
                         Memory.current_state.pokemon_index += 1;
 			            console.log('Spawning new ' + role + ': ' + newName + " with " + p_attributes);
 			            Game.spawns['Spawn1'].spawnCreep(p_attributes, newName, 
