@@ -101,7 +101,7 @@ module.exports = {
                     // and we only build on terrain that is empty.
                     build_places.forEach(function(b_place){
                         var things = Game.spawns.Spawn1.room.lookAt(b_place[0], b_place[1]);
-                        if ((built == false) && (things.length == 1) && (things[0]['type'] == 'terrain') && (things[0]['terrain'] == 'plain')) {
+                        if ((things.length == 1) && (things[0]['type'] == 'terrain') && (things[0]['terrain'] == 'plain')) {
                             Game.spawns.Spawn1.room.createConstructionSite(
                                 b_place[0], b_place[1],STRUCTURE_EXTENSION
                             );
