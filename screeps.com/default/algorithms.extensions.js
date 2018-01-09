@@ -77,7 +77,7 @@ function walk_around_center(center, radius, structure_type){
         [X,Y].forEach(function(axis){
             for (step=0;step < radius*2;step++){
                 pos[axis] += direction;
-               if ((pos[Y] - center[Y]) % 2 == spacing){
+               if (Math.abs((pos[Y] - center[Y]) % 2) == spacing){
                    fields.push([pos[X], pos[Y]]);
                }
             }
@@ -86,6 +86,6 @@ function walk_around_center(center, radius, structure_type){
     return fields;
 }
 
-walk_around_center([7,7], 2, 'test');
+// walk_around_center([7,7], 2, 'test');
 
-exports.build_at_next_free_slot = walk_around_center;
+exports.walk_around_center = walk_around_center;

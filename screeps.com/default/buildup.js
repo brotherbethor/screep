@@ -1,6 +1,7 @@
 var algorithms = require('algorithms.extensions');
 
-var extensions_by_rcl = {
+const EXTENSION_BUILT_EXCEPTION = 'extension_built_exception';
+const extensions_by_rcl = {
     0: 0,
     1: 0,
     2: 5,
@@ -86,24 +87,34 @@ module.exports = {
         	var sx = Game.spawns.Spawn1.pos.x;
     	    var sy = Game.spawns.Spawn1.pos.y;
             var spawn_point = [Game.spawns.Spawn1.pos.x, Game.spawns.Spawn1.pos.y];
-            var radius = typeof Memory.extension_radius == 'unset' ? 1 : Memory.extension_radius;
-            while (true){
-                var build_places = algorithms.walk_around_center(spawn_point, radius, 'extensions');
-                build_places.forEach(){
-                    
+            var radius = 1;
+            try {
+                while (true){
+                    if (radius > rcl) {
+                        console.log('WARNING!! please check your extension placing. radius > rcl!');
+                        return false;
+                    }
+                    console.log('trying to build an extension in radius ' + radius);
+                    var build_places = algorithms.walk_around_center(spawn_point, radius, 'extension');
+                    // we just look at every place to build every time.
+                    // things might be gone and allow building by now...
+                    // and we only build on terrain that is empty.
+                    build_places.forEach(function(b_place){
+                        var things = Game.spawns.Spawn1.room.lookAt(b_place[0], b_place[1]);
+                        if ((built == false) && (things.length == 1) && (things[0]['type'] == 'terrain') && (things[0]['terrain'] == 'plain')) {
+                            Game.spawns.Spawn1.room.createConstructionSite(
+                                b_place[0], b_place[1],STRUCTURE_EXTENSION
+                            );
+                            Memory.current_state.extensions += 1;
+                            console.log('>>> Built extension at ' + b_place[0] + ':' + b_place[1]);
+                            throw {'name': EXTENSION_BUILT_EXCEPTION};
+                        }
+                    });
+                    radius += 1;
                 }
+            } catch (e) {
+                if (e.name != EXTENSION_BUILT_EXCEPTION){ throw e; }
             }
-            var new_extension_position = extension_positions[Memory.current_state['extensions']];
-
-
-    	    var ex = new_extension_position[0] + sx;
-    	    var ey = new_extension_position[1] + sy;
-    	    
-            Game.spawns.Spawn1.room.createConstructionSite(
-    	      	ex,ey,STRUCTURE_EXTENSION
-    	    );
-            Memory.current_state['extensions'] += 1;
-    	    console.log('Built extension at ' + ex + ':' + ey);
         }
     }
 };
