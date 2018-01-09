@@ -21,11 +21,7 @@ module.exports.loop = function () {
             Game.spawns['Spawn1'].pos.x + 1, 
             Game.spawns['Spawn1'].pos.y, 
             {align: 'left', opacity: 0.8});
-    } else {
-        ["upgrader", "builder", "harvester"].forEach(
-            function(role){roleAll.build(role)}
-        );
-    }
+    } else {roleAll.build();}
 
     /*var tower = Game.getObjectById('a13b4afd88f562b0d9084200');
     if(tower) {
