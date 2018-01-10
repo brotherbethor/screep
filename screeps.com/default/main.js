@@ -3,6 +3,8 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleAll = require('role.all');
 
+var wall_building = require('algorithms.walls');
+
 var cleaner = require('cleaner');
 var buildup = require('buildup');
 var status = require('tools.status');
@@ -13,6 +15,7 @@ module.exports.loop = function () {
     cleaner.tick();
     buildup.extensions();
     buildup.roads();
+    wall_building.markExits();
 
     if(Game.spawns['Spawn1'].spawning) { 
         var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];
