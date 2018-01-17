@@ -17,7 +17,7 @@ module.exports.loop = function () {
     buildup.roads();
     if (typeof Memory.exits_counted == 'undefined') {
         var exits = wall_building.walkExits();
-        for (var ex in exits) {
+        /* for (var ex in exits) {
             console.log('exit ' + ex);
             console.log('    size: ' + exits[ex]['size']);
             console.log('    startx: ' + exits[ex].start.x);
@@ -25,7 +25,7 @@ module.exports.loop = function () {
             console.log('    endx: ' + exits[ex].end.x);
             console.log('    endx: ' + exits[ex].end.y);
             console.log('    direction: ' + exits[ex].direction);
-        }
+        }*/
     }
 
 

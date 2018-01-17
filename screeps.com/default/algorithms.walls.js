@@ -99,6 +99,23 @@ function walkExits(){
         y += DOWN;
     }
 
+    for (var c in exits) {
+        e = exits[c];
+        // console.log('>>>' + c + ':' + e.start.x + ':' + e.start.y);
+        if (e.size >= 4) {
+            // if x is the same for start and end, the exit must be
+            // on the y-axis
+            var direction = e.start.x == e.end.x ? Y : X;
+            var half = {
+                'x': Math.round((e.start.x + e.end.x) / 2),
+                'y': Math.round((e.start.y + e.end.y) / 2)
+            };
+            console.log('exit ' + c + ' has half point at x:' + half.x + ' y:' + half.y);
+            set_flag(half.x, half.y);
+        }
+
+    }
+
     Memory.exits_counted = true;
     return exits;
 }
