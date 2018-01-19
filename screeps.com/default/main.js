@@ -15,19 +15,7 @@ module.exports.loop = function () {
     cleaner.tick();
     buildup.extensions();
     buildup.roads();
-    if (typeof Memory.exits_counted == 'undefined') {
-        var exits = wall_building.walkExits();
-        /* for (var ex in exits) {
-            console.log('exit ' + ex);
-            console.log('    size: ' + exits[ex]['size']);
-            console.log('    startx: ' + exits[ex].start.x);
-            console.log('    starty: ' + exits[ex].start.y);
-            console.log('    endx: ' + exits[ex].end.x);
-            console.log('    endx: ' + exits[ex].end.y);
-            console.log('    direction: ' + exits[ex].direction);
-        }*/
-    }
-
+    buildup.walls();
 
     if(Game.spawns['Spawn1'].spawning) { 
         var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];

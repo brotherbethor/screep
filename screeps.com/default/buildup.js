@@ -1,4 +1,5 @@
-var algorithms = require('algorithms.extensions');
+var algorithms_extensions = require('algorithms.extensions');
+var algorithms_walls = require('algorithms.walls');
 
 const EXTENSION_BUILT_EXCEPTION = 'extension_built_exception';
 const extensions_by_rcl = {
@@ -37,7 +38,19 @@ function road_data(){
     return roads;
 }
 
-module.exports = {   
+module.exports = {  
+
+    walls: function() {
+        if (typeof Memory.outer_walls_triggered == 'undefined') {
+            Memory.wall_building_probability = 0.999;
+            algorithms_walls.buildOuterWalls();
+            console.log('Built first batch of walls and ramparts');
+            Memory.outer_walls_triggered = true;
+        } else {
+            // what do we do after the first batch or wallbuilding?
+        }
+    },
+
     roads: function() {
         if (typeof Memory.roads_built == 'undefined') {
             Memory.roads_built = 0;
@@ -95,7 +108,7 @@ module.exports = {
                         return false;
                     }
                     console.log('trying to build an extension in radius ' + radius);
-                    var build_places = algorithms.walk_around_center(spawn_point, radius, 'extension');
+                    var build_places = algorithms_extensions.walk_around_center(spawn_point, radius, 'extension');
                     // we just look at every place to build every time.
                     // things might be gone and allow building by now...
                     // and we only build on terrain that is empty.

@@ -1,11 +1,12 @@
-const room_size = 50;
+const room_size = 50; // - 4 for not building there
+const wall_offset = 2;
 const X = 0;
 const Y = 1;
 const UP = 1;
 const DOWN = -1;
 
 function remove_flags() {
-    Game.spawns.Spawn1.room.createFlag(x, y);
+    for (var f in Game.flags) {Game.flags[f].remove();}
 }
 
 function set_flag(x, y) {
@@ -22,11 +23,11 @@ function markExits(){
     if (typeof Memory.exits_marked != 'undefined') {
         return false;
     }
-    for (x = 0; x < room_size; x++) {
-        for (y = 0; y < room_size; y++){
-            if ((x == 0) || (x == (room_size -1))) {
+    for (x = wall_offset; x < (room_size - wall_offset); x++) {
+        for (y = wall_offset; y < (room_size - wall_offset); y++){
+            if ((x == 0) || (x == (room_size - wall_offset -1))) {
                 set_flag(x,y);
-            } else if ((y == 0) || (y == (room_size -1))) {
+            } else if ((y == 0) || (y == (room_size - wall_offset -1))) {
                 set_flag(x,y);
             }
         }
@@ -44,65 +45,13 @@ function is_wall(x, y){
 }
 
 
-function walkExits(){
-    // WARNING: This only works when there is a wall at all four corners
-    // of the room. It seems to be a design criteria that this is always the case.
-    // But if this changes or is wrong this function will fail in interesting ways.
-    function do_tile(x_, y_, direction){
-        // console.log(x +':' + y +' before:' + exit_active + ':'+exits);
-        if (!is_wall(x_, y_)){
-            if (!exit_active) {
-                exit_count += 1;
-                exit_active = true;
-                exits[exit_count] = {
-                    'direction': direction,
-                    'size': 1,
-                    'start': {
-                        'x': x_,
-                        'y': y_},
-                    'end': {
-                        'x': x_, // just to have a value here
-                        'y': y_} // just to have a value here
-                };
-            } else {
-                exits[exit_count]['size'] += 1;
-                exits[exit_count].end.x = x_;
-                exits[exit_count].end.y = y_;
-            }
-        } else {
-            exit_active = false;
-        }
-    }
 
-    if (typeof Memory.exits_counted != 'undefined') {return false;}
-    var exit_count = 0;
-    var exit_active = false;
-    var exits = {};
-    var y = 0;
-    var x = 0;
-
-    // TODO this probably has a nicer way of doing it ...
-    while (x < room_size - 1) {
-        do_tile(x, y, X);
-        x += UP;
-    }
-    while (y < room_size -1) {
-        do_tile(x, y, Y);
-        y += UP;
-    }
-    while (-x < 0) {
-        do_tile(x, y, X);
-        x += DOWN;
-    }
-    while (-y < 0) {
-        do_tile(x, y, Y);
-        y += DOWN;
-    }
-
-    for (var c in exits) {
-        e = exits[c];
+function collectRampartPositions(known_exits){
+    var ramparts = [];
+    for (var c in known_exits) {
+        e = known_exits[c];
         // console.log('>>>' + c + ':' + e.start.x + ':' + e.start.y);
-        if (e.size >= 4) {
+        if (e.size >= 10) {
             // if x is the same for start and end, the exit must be
             // on the y-axis
             var direction = e.start.x == e.end.x ? Y : X;
@@ -110,60 +59,132 @@ function walkExits(){
                 'x': Math.round((e.start.x + e.end.x) / 2),
                 'y': Math.round((e.start.y + e.end.y) / 2)
             };
-            console.log('exit ' + c + ' has half point at x:' + half.x + ' y:' + half.y);
-            set_flag(half.x, half.y);
+            // set_flag(half.x, half.y);
+            // set_flag(half.x + (direction == X ? 1 : 0), half.y + (direction == Y ? 1 : 0));
+            // set_flag(half.x - (direction == X ? 1 : 0), half.y - (direction == Y ? 1 : 0));
+            ramparts.push([half.x, half.y]);
+            ramparts.push([(half.x + (direction == X ? 1 : 0)), (half.y + (direction == Y ? 1 : 0))]);
+            ramparts.push([(half.x - (direction == X ? 1 : 0)), (half.y - (direction == Y ? 1 : 0))]);
         }
-
     }
-
-    Memory.exits_counted = true;
-    return exits;
+    return ramparts;
 }
 
 
-function countExits(){
-    function do_tile(x_, y_){
-        // console.log(x +':' + y +' before:' + exit_active + ':'+exits);
-        if (!is_wall(x_, y_)){
-            if (!exit_active) {
-                exits += 1;
-                exit_active = true;
-            }
+// WARNING: This only works when there is a wall at all four corners
+// of the room. It seems to be a design criteria that this is always the case.
+// But if this changes or is wrong this function will fail in interesting ways.
+function checkTile(x, y, direction, vars){
+    if (!is_wall(x, y)){
+        if (!vars.exit_active) {
+            vars.exit_count += 1;
+            vars.exit_active = true;
+            vars.exits[vars.exit_count] = {
+                'direction': direction,
+                'size': 1,
+                'start': {
+                    'x': x,
+                    'y': y},
+                'end': {
+                    'x': x, // just to have a value here
+                    'y': y} // just to have a value here
+            };
         } else {
-            exit_active = false;
+            vars.exits[vars.exit_count]['size'] += 1;
+            vars.exits[vars.exit_count].end.x = x;
+            vars.exits[vars.exit_count].end.y = y;
         }
+    } else {
+        vars.exit_active = false;
     }
+    return vars;
+}
 
-    if (typeof Memory.exits_counted != 'undefined') {return false;}
-    var exits = is_wall(0, 0) ? 0 : 1;
-    var exit_active = is_wall(0, 0) ? false : true;
-    var y = 0;
-    var x = 0;
 
+function buildExitData() {
+    var exit_data = {
+        exit_count: 0,
+        exit_active: false,
+        exits: {}
+    };
+    var y = wall_offset;
+    var x = wall_offset;
+    // console.log('>>>' + exit_data.exit_count + ':' + exit_data.exit_active);
     // TODO this probably has a nicer way of doing it ...
-    while (x < room_size - 1) {
-        do_tile(x, y);
+    while (x < (room_size - wall_offset -1)) {
+        exit_data = checkTile(x, y, X, exit_data);
         x += UP;
     }
-    while (y < room_size -1 ) {
-        do_tile(x, y);
+    while (y < (room_size - wall_offset -1)) {
+        exit_data = checkTile(x, y, Y, exit_data);
         y += UP;
     }
-    while (-x < 0) {
-        do_tile(x, y);
+    while (x > wall_offset) {
+        exit_data = checkTile(x, y, X, exit_data);
         x += DOWN;
     }
-    while (-y < 0) {
-        do_tile(x, y);
+    while (y > wall_offset) {
+        exit_data = checkTile(x, y, Y, exit_data);
         y += DOWN;
     }
-
-    Memory.exits_counted = true;
-    return exits;
+    return exit_data;
 }
 
 
-exports.walkExits = walkExits;
-exports.countExits = countExits;
+function buildWall(x, y, ramparts){
+    for (var i in ramparts){
+        r = ramparts[i];
+        if ((r[0] == x) && (r[1] == y)) {
+            // build a rampart here at a later point in time
+            // save the rampart position for later reference
+            return;
+        }
+    }
+    if (!is_wall(x, y)){
+        set_flag(x, y);
+        /*Game.spawns.Spawn1.room.createConstructionSite(
+            x,
+            y,
+            STRUCTURE_WALL
+        );*/
+    }
+}
+
+
+function buildWalls(ramparts) {
+    var y = wall_offset;
+    var x = wall_offset;
+    // console.log('>>>' + exit_data.exit_count + ':' + exit_data.exit_active);
+    // TODO this probably has a nicer way of doing it ...
+    while (x < (room_size - wall_offset -1)) {
+        buildWall(x, y, ramparts);
+        x += UP;
+    }
+    while (y < (room_size - wall_offset -1)) {
+        buildWall(x, y, ramparts);
+        y += UP;
+    }
+    while (x > wall_offset) {
+        buildWall(x, y, ramparts);
+        x += DOWN;
+    }
+    while (y > wall_offset) {
+        buildWall(x, y, ramparts);
+        y += DOWN;
+    }
+}
+
+
+function buildOuterWalls(){
+    // if (typeof Memory.exits_counted != 'undefined') {return false;}
+    // JETZT kommt der Sonderfall, daß die Ecken nicht immer schon bebaut sind
+    // fixen!
+    remove_flags();
+    var exit_data = buildExitData();
+    var rampart_positions = collectRampartPositions(exit_data.exits);
+    buildWalls(rampart_positions);
+}
+
 exports.markExits = markExits;
 exports.remove_flags = remove_flags;
+exports.buildOuterWalls = buildOuterWalls;
