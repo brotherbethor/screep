@@ -6,9 +6,10 @@ module.exports = {
 
     removeAllFlags: function() {
         for (var f in Game.flags) {Game.flags[f].remove();}
-    }
+    },
 
     initVariables: function(){
+        Memory.respawned = false;
         Memory.probabilities = {};
         Memory.probabilities.walls = 0.999;
         Memory.probabilities.roads = 0.999;
@@ -17,6 +18,13 @@ module.exports = {
         Memory.saved_ramparts = [];
         Memory.counters = {};
         Memory.counters.roads = 0;
+        Memory.construct_outer_walls = true;
+        Memory.run_main_init = false;
+        Memory.current_state = {};
+        Memory.sources_active = Game.spawns.Spawn1.room.find(FIND_SOURCES_ACTIVE).map(x => x.id);
+        Memory.spawn_id = Game.spawns['Spawn1'].id;
+        Memory.last_built_creeper = -1;
+        Memory.last_source_active = -1;
     },
 
     walls: function() {
@@ -27,14 +35,6 @@ module.exports = {
 
     // remember to put new things in Memory here
     deleteMemory: function(){
-        delete Memory.current_state;
-        delete Memory.roads_built;
-        delete Memory.road_building_probability;
-        delete Memory.last_built_creeper;
-        delete Memory.exits_counted;
-        delete Memory.wall_building_probability;
-        delete Memory.outer_walls_triggered;
-        for (var f in Game.flags) {Game.flags[f].remove();}
-        for (var c in Game.creeps) {console.log(Game.creeps[c].suicide());}
+        for (var m in Memory){delete Memory[m];}
     }
 };

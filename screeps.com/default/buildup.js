@@ -15,8 +15,11 @@ const extensions_by_rcl = {
 }
 
 const _structures_dont_destroy = [
-    'extension', 'spawn', 'controller',
-    'wall', 'rampart'
+    'extension',
+    'spawn',
+    'controller',
+    'wall',
+    'rampart'
     ];
 
 
@@ -28,22 +31,23 @@ function _destroyConstruction(cid){
 function _clearTile(x, y) {
     var things = Game.spawns.Spawn1.room.lookAt(x, y);
     if (things.length == 1) {return;}
-    for (var thing in things) {
+    for (var i in things) {
+        var thing = things[i];
         var t = thing['type'];
         if (t == 'flag'){continue;}
         else if (t == 'structure') {
             var structure_type = thing['structure']['structureType'];
-            if (structure_type) in _structures_dont_destroy {
+            if (structure_type in _structures_dont_destroy) {
                 continue;
             }
-            if (structure_type in ['road']) {
+            if (structure_type == 'road') {
                 _destroyConstruction(thing['structure']['id']);
             } 
         }
     }
 }
 
-function road_data(){
+function _buildRoadData(){
     var spawn = Game.spawns.Spawn1;
     var controller = Game.spawns.Spawn1.room.controller;
     var froms = [spawn, controller];
@@ -68,7 +72,8 @@ function road_data(){
 
 
 function _buildFortification(saved_objects, structure_type){
-    for (var o in saved_objects){
+    for (var i in saved_objects){
+        var o = saved_objects[i];
         var x = o[0];
         var y = o[1];
         _clearTile(x, y);
@@ -85,6 +90,7 @@ module.exports = {
             _buildFortification(Memory.saved_walls, STRUCTURE_WALL);
             _buildFortification(Memory.saved_ramparts, STRUCTURE_RAMPART);
             Memory.outer_walls_constructed = true;
+            Memory.construct_outer_walls = false;
             console.log('Built first batch of walls and ramparts');
         } else {
             // we have marked the walls and we have marked the construction sites
@@ -99,7 +105,7 @@ module.exports = {
         if (Memory.current_state.build_roads == true) {
             if ( Memory.current_state.roads == 0 || 
                 (Math.random() >= Memory.road_building_probability)) {
-                var roads = road_data();
+                var roads = _buildRoadData();
                 for (var road_name in roads) {
                     console.log(road_name + 'is a road');
                     var coordinates = roads[road_name];

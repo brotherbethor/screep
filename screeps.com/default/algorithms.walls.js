@@ -50,7 +50,7 @@ function _collectRampartPositions(known_exits){
 
 
 function _saveExitToMemory(x, y){
-    Memory.saved_exits.push([x, y]);
+    Memory.saved_walls.push([x, y]);
 }
 
 
@@ -168,9 +168,6 @@ function markOuterWalls(){
     // if (typeof Memory.exits_counted != 'undefined') {return false;}
     // JETZT kommt der Sonderfall, daß die Ecken nicht immer schon bebaut sind
     // fixen!
-    Memory.saved_exits = [];      // TODO: kann weg nach dem Test
-    Memory.saved_ramparts = [];   // TODO: kann weg nach dem Test
-    _removeFlags();
     var exit_data = _buildExitData();
     var rampart_positions = _collectRampartPositions(exit_data.exits);
     _markWalls(rampart_positions);

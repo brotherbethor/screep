@@ -16,10 +16,6 @@ var creeper_numbers_per_rcl = {
 };
 
 function next_creeper_round_robin(){
-    if (typeof Memory.last_built_creeper == 'undefined'){
-        Memory.last_built_creeper = 0;
-        return 'harvester';
-    }
     var build_index = Memory.last_built_creeper + 1;
     if (build_index == creeper_build_order.length) {
         build_index = 0;
@@ -52,6 +48,11 @@ function creepers_type_change(creepers, new_type){
     });
 }
 
+
+function _nextTargetSourceID(){
+    Memory.last_source_active = (Memory.last_source_active +1) % Memory.sources_active.length;
+    return Memory.sources_active[Memory.last_source_active];
+}
 
 var roleAll = {
     build: function() {
@@ -112,7 +113,7 @@ var roleAll = {
 			            Game.spawns['Spawn1'].spawnCreep(p_attributes, newName, 
 			                {memory: {
 			                	"role": role,
-			                	"target_source": {true: 1, false: 0}[Math.random() >= 0.5]
+			                	"target_source": _nextTargetSourceID()
                                 }
 			                });
                         Memory.current_state[role_name_in_memory] += 1;

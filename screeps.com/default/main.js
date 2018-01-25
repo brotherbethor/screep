@@ -9,7 +9,24 @@ var cleaner = require('cleaner');
 var buildup = require('buildup');
 var status = require('tools.status');
 
+var once = require('tools.runonce');
+
+
+function _init(){
+    once.deleteMemory();
+    once.initVariables();
+    once.removeAllFlags();
+    once.walls(); // memorize wall coordinates
+    Memory.run_main_init = false;
+    console.log('run-once: done');
+}
+
+
 module.exports.loop = function () {
+    // only run this once at the beginning of the game.
+    if ((typeof Memory.spawn_id == 'undefined') || (Memory.spawn_id != Game.spawns['Spawn1'].id)) {
+        _init();
+    }
     status.globalState();
     cleaner.tick();
     buildup.extensions();
