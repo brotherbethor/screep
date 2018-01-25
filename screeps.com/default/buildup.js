@@ -14,6 +14,35 @@ const extensions_by_rcl = {
     8: 60
 }
 
+const _structures_dont_destroy = [
+    'extension', 'spawn', 'controller',
+    'wall', 'rampart'
+    ];
+
+
+function _destroyConstruction(cid){
+    Game.getObjectById(cid).destroy();
+}
+
+
+function _clearTile(x, y) {
+    var things = Game.spawns.Spawn1.room.lookAt(x, y);
+    if (things.length == 1) {return;}
+    for (var thing in things) {
+        var t = thing['type'];
+        if (t == 'flag'){continue;}
+        else if (t == 'structure') {
+            var structure_type = thing['structure']['structureType'];
+            if (structure_type) in _structures_dont_destroy {
+                continue;
+            }
+            if (structure_type in ['road']) {
+                _destroyConstruction(thing['structure']['id']);
+            } 
+        }
+    }
+}
+
 function road_data(){
     var spawn = Game.spawns.Spawn1;
     var controller = Game.spawns.Spawn1.room.controller;
@@ -34,60 +63,65 @@ function road_data(){
             );
         }
     );
-    console.log('road length ' + roads.length);
     return roads;
+}
+
+
+function _buildFortification(saved_objects, structure_type){
+    for (var o in saved_objects){
+        var x = o[0];
+        var y = o[1];
+        _clearTile(x, y);
+        Game.spawns.Spawn1.room.createConstructionSite(
+            x, y, structure_type
+        );
+    }
 }
 
 module.exports = {  
 
     walls: function() {
-        if (typeof Memory.outer_walls_triggered == 'undefined') {
-            Memory.wall_building_probability = 0.999;
-            algorithms_walls.buildOuterWalls();
+        if (Memory.construct_outer_walls == true) {
+            _buildFortification(Memory.saved_walls, STRUCTURE_WALL);
+            _buildFortification(Memory.saved_ramparts, STRUCTURE_RAMPART);
+            Memory.outer_walls_constructed = true;
             console.log('Built first batch of walls and ramparts');
-            Memory.outer_walls_triggered = true;
         } else {
-            // what do we do after the first batch or wallbuilding?
+            // we have marked the walls and we have marked the construction sites
+            // now we need to
+            // increase the wall's hp ...
+            // but one step at a time
+            // maybe put this somewhere else
         }
     },
 
     roads: function() {
-        if (typeof Memory.roads_built == 'undefined') {
-            Memory.roads_built = 0;
-            Memory.road_building_probability = 0.999; // rebuild every 1000 ticks or so
-            console.log('Initialized road building data.');
-        } else {
-
-            if (Memory.current_state['extensions'] >= 5) {
-                if ((Memory.roads_built == 0) ||
-                    (Math.random() >= Memory.road_building_probability)) {
-                    var roads = road_data();
-                    for (var road_name in roads) {
-                        console.log(road_name + 'is a road');
-                        var coordinates = roads[road_name];
-                        var origin = coordinates['from'];
-                        var destination = coordinates['to'];
-                        var waypoints = Game.spawns.Spawn1.room.findPath(
-                            origin.pos,
-                            destination.pos,
-                            {'ignoreCreeps': true} // only ever build the default roads
-                        );
-                        console.log('waypoints: ' + waypoints.length);
-                        waypoints.forEach(
-                            function(waypoint){
-                                Game.spawns.Spawn1.room.createConstructionSite(
-                                    waypoint.x,
-                                    waypoint.y,
-                                    STRUCTURE_ROAD
-                                );
-                            }
-                        );
-                        console.log('road built');
-                    }
-                    Memory.roads_built += 1;
+        if (Memory.current_state.build_roads == true) {
+            if ( Memory.current_state.roads == 0 || 
+                (Math.random() >= Memory.road_building_probability)) {
+                var roads = road_data();
+                for (var road_name in roads) {
+                    console.log(road_name + 'is a road');
+                    var coordinates = roads[road_name];
+                    var origin = coordinates['from'];
+                    var destination = coordinates['to'];
+                    var waypoints = Game.spawns.Spawn1.room.findPath(
+                        origin.pos,
+                        destination.pos,
+                        {'ignoreCreeps': true} // only ever build the default roads
+                    );
+                    waypoints.forEach(
+                        function(waypoint){
+                            Game.spawns.Spawn1.room.createConstructionSite(
+                                waypoint.x,
+                                waypoint.y,
+                                STRUCTURE_ROAD
+                            );
+                        }
+                    );
+                    console.log('road built');
                 }
             }
-
         }
     },
 

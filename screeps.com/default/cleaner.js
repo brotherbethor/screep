@@ -6,6 +6,10 @@ module.exports = {
                 delete Memory.creeps[name];
             }
         }
-    }
+    },
 
+    removeFlags: function(){
+
+    	exports.remove_flags = remove_flags;
+    }
 };

@@ -1,41 +1,21 @@
-const room_size = 50; // - 4 for not building there
+const room_size = 50;
 const wall_offset = 2;
 const X = 0;
 const Y = 1;
 const UP = 1;
 const DOWN = -1;
 
-function remove_flags() {
+function _removeFlags() {
     for (var f in Game.flags) {Game.flags[f].remove();}
 }
 
-function set_flag(x, y) {
-    var things = Game.spawns.Spawn1.room.lookAt(x, y);
-    if (things.length != 1) {return false;}
-    if ((things[0]['type'] == 'terrain') && (things[0]['terrain'] == 'wall')) {
-        return false;
-    } else {
-        Game.spawns.Spawn1.room.createFlag(x, y);
-    }
+
+function _setFlag(x, y, color) {
+    Game.spawns.Spawn1.room.createFlag(x, y, undefined, color);
 }
 
-function markExits(){
-    if (typeof Memory.exits_marked != 'undefined') {
-        return false;
-    }
-    for (x = wall_offset; x < (room_size - wall_offset); x++) {
-        for (y = wall_offset; y < (room_size - wall_offset); y++){
-            if ((x == 0) || (x == (room_size - wall_offset -1))) {
-                set_flag(x,y);
-            } else if ((y == 0) || (y == (room_size - wall_offset -1))) {
-                set_flag(x,y);
-            }
-        }
-    }
-    Memory.exits_marked = true;
-}
 
-function is_wall(x, y){
+function _isWall(x, y){
     var things = Game.spawns.Spawn1.room.lookAt(x, y);
     if (things.length != 1) {return false;}
     if ((things[0]['type'] == 'terrain') && (things[0]['terrain'] == 'wall')) {
@@ -45,8 +25,7 @@ function is_wall(x, y){
 }
 
 
-
-function collectRampartPositions(known_exits){
+function _collectRampartPositions(known_exits){
     var ramparts = [];
     for (var c in known_exits) {
         e = known_exits[c];
@@ -59,9 +38,8 @@ function collectRampartPositions(known_exits){
                 'x': Math.round((e.start.x + e.end.x) / 2),
                 'y': Math.round((e.start.y + e.end.y) / 2)
             };
-            // set_flag(half.x, half.y);
-            // set_flag(half.x + (direction == X ? 1 : 0), half.y + (direction == Y ? 1 : 0));
-            // set_flag(half.x - (direction == X ? 1 : 0), half.y - (direction == Y ? 1 : 0));
+            // from the half point, add and subtract one to get
+            // a 3-tiles big rampart. that should be enough for now.
             ramparts.push([half.x, half.y]);
             ramparts.push([(half.x + (direction == X ? 1 : 0)), (half.y + (direction == Y ? 1 : 0))]);
             ramparts.push([(half.x - (direction == X ? 1 : 0)), (half.y - (direction == Y ? 1 : 0))]);
@@ -71,11 +49,20 @@ function collectRampartPositions(known_exits){
 }
 
 
-// WARNING: This only works when there is a wall at all four corners
-// of the room. It seems to be a design criteria that this is always the case.
-// But if this changes or is wrong this function will fail in interesting ways.
-function checkTile(x, y, direction, vars){
-    if (!is_wall(x, y)){
+function _saveExitToMemory(x, y){
+    Memory.saved_exits.push([x, y]);
+}
+
+
+function _saveRampartToMemory(x, y){
+    Memory.saved_ramparts.push([x, y]);
+}
+
+
+// so, this only works because it is run right at the start
+// after respawning
+function _checkTile(x, y, direction, vars){
+    if (!_isWall(x, y)){
         if (!vars.exit_active) {
             vars.exit_count += 1;
             vars.exit_active = true;
@@ -101,7 +88,7 @@ function checkTile(x, y, direction, vars){
 }
 
 
-function buildExitData() {
+function _buildExitData() {
     var exit_data = {
         exit_count: 0,
         exit_active: false,
@@ -112,79 +99,81 @@ function buildExitData() {
     // console.log('>>>' + exit_data.exit_count + ':' + exit_data.exit_active);
     // TODO this probably has a nicer way of doing it ...
     while (x < (room_size - wall_offset -1)) {
-        exit_data = checkTile(x, y, X, exit_data);
+        exit_data = _checkTile(x, y, X, exit_data);
         x += UP;
     }
+    exit_data.exit_active = false;
     while (y < (room_size - wall_offset -1)) {
-        exit_data = checkTile(x, y, Y, exit_data);
+        exit_data = _checkTile(x, y, Y, exit_data);
         y += UP;
     }
+    exit_data.exit_active = false;
     while (x > wall_offset) {
-        exit_data = checkTile(x, y, X, exit_data);
+        exit_data = _checkTile(x, y, X, exit_data);
         x += DOWN;
     }
+    exit_data.exit_active = false;
     while (y > wall_offset) {
-        exit_data = checkTile(x, y, Y, exit_data);
+        exit_data = _checkTile(x, y, Y, exit_data);
         y += DOWN;
     }
+    exit_data.exit_active = false;
     return exit_data;
 }
 
 
-function buildWall(x, y, ramparts){
+function _markWall(x, y, ramparts){
     for (var i in ramparts){
         r = ramparts[i];
         if ((r[0] == x) && (r[1] == y)) {
             // build a rampart here at a later point in time
             // save the rampart position for later reference
+            _setFlag(x, y, COLOR_BLUE);
+            _saveRampartToMemory(x, y);
             return;
         }
     }
-    if (!is_wall(x, y)){
-        set_flag(x, y);
-        /*Game.spawns.Spawn1.room.createConstructionSite(
-            x,
-            y,
-            STRUCTURE_WALL
-        );*/
+    if (!_isWall(x, y)){
+        _setFlag(x, y, COLOR_RED);
+        _saveExitToMemory(x, y);
     }
 }
 
 
-function buildWalls(ramparts) {
+function _markWalls(ramparts) {
     var y = wall_offset;
     var x = wall_offset;
     // console.log('>>>' + exit_data.exit_count + ':' + exit_data.exit_active);
     // TODO this probably has a nicer way of doing it ...
     while (x < (room_size - wall_offset -1)) {
-        buildWall(x, y, ramparts);
+        _markWall(x, y, ramparts);
         x += UP;
     }
     while (y < (room_size - wall_offset -1)) {
-        buildWall(x, y, ramparts);
+        _markWall(x, y, ramparts);
         y += UP;
     }
     while (x > wall_offset) {
-        buildWall(x, y, ramparts);
+        _markWall(x, y, ramparts);
         x += DOWN;
     }
     while (y > wall_offset) {
-        buildWall(x, y, ramparts);
+        _markWall(x, y, ramparts);
         y += DOWN;
     }
 }
 
 
-function buildOuterWalls(){
+function markOuterWalls(){
     // if (typeof Memory.exits_counted != 'undefined') {return false;}
     // JETZT kommt der Sonderfall, daß die Ecken nicht immer schon bebaut sind
     // fixen!
-    remove_flags();
-    var exit_data = buildExitData();
-    var rampart_positions = collectRampartPositions(exit_data.exits);
-    buildWalls(rampart_positions);
+    Memory.saved_exits = [];      // TODO: kann weg nach dem Test
+    Memory.saved_ramparts = [];   // TODO: kann weg nach dem Test
+    _removeFlags();
+    var exit_data = _buildExitData();
+    var rampart_positions = _collectRampartPositions(exit_data.exits);
+    _markWalls(rampart_positions);
 }
 
-exports.markExits = markExits;
-exports.remove_flags = remove_flags;
-exports.buildOuterWalls = buildOuterWalls;
+exports.markOuterWalls = markOuterWalls;

@@ -10,11 +10,12 @@ var buildup = require('buildup');
 var status = require('tools.status');
 
 module.exports.loop = function () {
-
     status.globalState();
     cleaner.tick();
     buildup.extensions();
     buildup.roads();
+    // TODO mauern gleich zu anfang markieren aber
+    // aus der bauliste herausfiltern bis extensions und strassen gebaut sind
     buildup.walls();
 
     if(Game.spawns['Spawn1'].spawning) { 

@@ -4,3 +4,5 @@
 *.tmp
 *.sync
 127_0_0_1_*
+*.sublime-project
+*.sublime-workspace
