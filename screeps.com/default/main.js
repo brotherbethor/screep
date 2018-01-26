@@ -12,6 +12,14 @@ var status = require('tools.status');
 var once = require('tools.runonce');
 
 
+const _roles = {
+    'builder': roleBuilder,
+    'upgrader': roleUpgrader,
+    'harvester': roleHarvester
+}
+
+
+
 function _init(){
     once.deleteMemory();
     once.initVariables();
@@ -59,21 +67,9 @@ module.exports.loop = function () {
         }
     }*/
 
-    var foo = {
-        'harvester': roleHarvester
-    }
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
-        if(creep.memory.role == 'harvester') {
-            roleHarvester.run(creep);
-            // foo[creep.memory.role].run(creep);
-        }
-        if(creep.memory.role == 'upgrader') {
-            roleUpgrader.run(creep);
-        }
-        if(creep.memory.role == 'builder') {
-            roleBuilder.run(creep);
-        }
+        _roles[creep.memory.role].run(creep);
     }
 }
