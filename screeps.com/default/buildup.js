@@ -2,6 +2,7 @@ var algorithms_extensions = require('algorithms.extensions');
 var algorithms_walls = require('algorithms.walls');
 
 const EXTENSION_BUILT_EXCEPTION = 'extension_built_exception';
+
 const extensions_by_rcl = {
     0: 0,
     1: 0,
@@ -15,12 +16,12 @@ const extensions_by_rcl = {
 }
 
 const _structures_dont_destroy = [
-    'extension',
+    'extension', 
     'spawn',
     'controller',
     'wall',
     'rampart'
-    ];
+];
 
 
 function _destroyConstruction(cid){
@@ -47,6 +48,7 @@ function _clearTile(x, y) {
     }
 }
 
+
 function _buildRoadData(){
     var spawn = Game.spawns.Spawn1;
     var controller = Game.spawns.Spawn1.room.controller;
@@ -72,32 +74,49 @@ function _buildRoadData(){
 
 
 function _buildFortification(saved_objects, structure_type){
-    for (var i in saved_objects){
-        var o = saved_objects[i];
+    if (structure_type == STRUCTURE_RAMPART){
+        var fortifications = saved_objects;
+    } else {
+        var fortifications = saved_objects.slice(Memory.outer_walls_constructed, Memory.outer_walls_constructed + 10);
+    }
+    for (var i in fortifications){
+        var o = fortifications[i];
         var x = o[0];
         var y = o[1];
+        console.log('clearing ' + x + ':' + y);
         _clearTile(x, y);
         Game.spawns.Spawn1.room.createConstructionSite(
             x, y, structure_type
         );
     }
+    if (structure_type == STRUCTURE_WALL){
+        Memory.outer_walls_constructed += fortifications.length;
+    }
 }
 
+
 module.exports = {  
+
+    ramparts: function() {
+        if (Memory.construct_ramparts == true) {
+            _buildFortification(Memory.saved_ramparts, STRUCTURE_RAMPART);
+            Memory.ramparts_were_constructed = true;
+            Memory.construct_ramparts = false;
+            console.log('Built first batch of ramparts.');
+        } else {
+            // what now??
+        }
+
+    },
 
     walls: function() {
         if (Memory.construct_outer_walls == true) {
             _buildFortification(Memory.saved_walls, STRUCTURE_WALL);
-            _buildFortification(Memory.saved_ramparts, STRUCTURE_RAMPART);
-            Memory.outer_walls_constructed = true;
+            Memory.outer_walls_were_constructed = true;
             Memory.construct_outer_walls = false;
-            console.log('Built first batch of walls and ramparts');
+            console.log('Built a batch of walls.');
         } else {
-            // we have marked the walls and we have marked the construction sites
-            // now we need to
-            // increase the wall's hp ...
-            // but one step at a time
-            // maybe put this somewhere else
+            // what now??
         }
     },
 
@@ -107,7 +126,6 @@ module.exports = {
                 (Math.random() >= Memory.road_building_probability)) {
                 var roads = _buildRoadData();
                 for (var road_name in roads) {
-                    console.log(road_name + 'is a road');
                     var coordinates = roads[road_name];
                     var origin = coordinates['from'];
                     var destination = coordinates['to'];
@@ -149,9 +167,6 @@ module.exports = {
                     }
                     console.log('trying to build an extension in radius ' + radius);
                     var build_places = algorithms_extensions.walkAroundCenter(spawn_point, radius, 'extension');
-                    // we just look at every place to build every time.
-                    // things might be gone and allow building by now...
-                    // and we only build on terrain that is empty.
                     build_places.forEach(function(b_place){
                         var things = Game.spawns.Spawn1.room.lookAt(b_place[0], b_place[1]);
                         if ((things.length == 1) && (things[0]['type'] == 'terrain') && (things[0]['terrain'] == 'plain')) {

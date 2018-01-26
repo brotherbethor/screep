@@ -38,9 +38,8 @@ module.exports.loop = function () {
     cleaner.tick();
     buildup.extensions();
     buildup.roads();
-    // TODO mauern gleich zu anfang markieren aber
-    // aus der bauliste herausfiltern bis extensions und strassen gebaut sind
     buildup.walls();
+    buildup.ramparts();
 
     if(Game.spawns['Spawn1'].spawning) { 
         var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];

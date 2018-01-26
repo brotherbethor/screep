@@ -26,6 +26,9 @@ module.exports = {
         Memory.last_built_creeper = -1;
         Memory.last_source_active = -1;
         Memory.pokemon_index = -1;
+        Memory.outer_walls_were_constructed = false;
+        Memory.construct_outer_walls = false;
+        Memory.outer_walls_constructed = 0;
     },
 
     walls: function() {

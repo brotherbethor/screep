@@ -17,8 +17,9 @@ var creeper_numbers_per_rcl = {
 
 
 function _nextPokemonName(){
+    var pokemon_names = pokenames.pokemon_names;
     Memory.pokemon_index = (1 + Memory.pokemon_index) % pokemon_names.length;
-    return pokemon_names[Memory.current_state.pokemon_index];
+    return pokemon_names[Memory.pokemon_index];
 }
 
 
@@ -74,8 +75,6 @@ var roleAll = {
         // - schauen, ob es nichts zu harvesten gibt, wenn ja, reduziere harvester auf 2
         // mache aus dem rest upgrader
         // schaue, ob es nichts zu 
-
-        var pokemon_names = pokenames.pokemon_names;
         var no_construction_sites = Memory.current_state.construction_sites == 0;
         var upgraders = _.filter(Game.creeps, (_creep) => _creep.memory.role == 'upgrader');
         var harvesters = _.filter(Game.creeps, (_creep) => _creep.memory.role == 'harvester');
