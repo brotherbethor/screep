@@ -143,8 +143,6 @@ function _markWall(x, y, ramparts){
 function _markWalls(ramparts) {
     var y = wall_offset;
     var x = wall_offset;
-    // console.log('>>>' + exit_data.exit_count + ':' + exit_data.exit_active);
-    // TODO this probably has a nicer way of doing it ...
     while (x < (room_size - wall_offset -1)) {
         _markWall(x, y, ramparts);
         x += UP;
@@ -165,9 +163,6 @@ function _markWalls(ramparts) {
 
 
 function markOuterWalls(){
-    // if (typeof Memory.exits_counted != 'undefined') {return false;}
-    // JETZT kommt der Sonderfall, daß die Ecken nicht immer schon bebaut sind
-    // fixen!
     var exit_data = _buildExitData();
     var rampart_positions = _collectRampartPositions(exit_data.exits);
     _markWalls(rampart_positions);

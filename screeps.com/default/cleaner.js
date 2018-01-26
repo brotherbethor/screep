@@ -8,8 +8,7 @@ module.exports = {
         }
     },
 
-    removeFlags: function(){
-
-    	exports.remove_flags = remove_flags;
+    removeAllFlags: function(){
+    	for (var f in Game.flags) {Game.flags[f].remove();}
     }
 };

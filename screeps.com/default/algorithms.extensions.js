@@ -11,7 +11,7 @@ const spacing_by_structure_type = {
 }
 
 // used for testing
-function asciibox(){
+function _asciiBox(){
     var a = [];
     for (i = 0; i<15; i++){
         a.push(['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.']);
@@ -21,14 +21,14 @@ function asciibox(){
 
 
 // used for testing
-function paint(coords, map){
+function _paint(coords, map){
     map[coords[X]][coords[Y]] = 'X';
     return map;
 }
 
 
 // used for testing
-function draw(map){
+function _draw(map){
     map.forEach(function(line){
         var printme = '';
         line.forEach(function(item){
@@ -40,7 +40,7 @@ function draw(map){
 
 
 // used for testing
-function walk_around_center_draw_version(center, radius, map){
+function walkAroundCenterDrawVersion(center, radius, map){
     var pos = [0, 0]; // init
     pos[X] = center[X] + radius;
     pos[Y] = center[Y] + radius;
@@ -51,7 +51,7 @@ function walk_around_center_draw_version(center, radius, map){
                 // change after testing
                console.log(pos, center, (pos[X] - center[X]) % 2)
                if ((pos[X] - center[X]) % 2 == 0){
-                   map = paint(pos, map);
+                   map = _paint(pos, map);
                }
             }
         });
@@ -59,15 +59,15 @@ function walk_around_center_draw_version(center, radius, map){
 }
 
 
-// used for testing
-function test_drawing(){
-	var map = asciibox();
-	map = walk_around_center_draw_version([7,7], 2, map);
-	draw(map);
+// test this module
+function _testDrawing(){
+	var map = _asciiBox();
+	map = walkAroundCenterDrawVersion([7,7], 2, map);
+	_draw(map);
 }
 
 
-function walk_around_center(center, radius, structure_type){
+function walkAroundCenter(center, radius, structure_type){
     var spacing = spacing_by_structure_type[structure_type];
     var pos = [0, 0]; // init
     pos[X] = center[X] + radius;
@@ -86,6 +86,4 @@ function walk_around_center(center, radius, structure_type){
     return fields;
 }
 
-// walk_around_center([7,7], 2, 'test');
-
-exports.walk_around_center = walk_around_center;
+exports.walkAroundCenter = walkAroundCenter;

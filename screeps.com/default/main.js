@@ -4,9 +4,9 @@ var roleBuilder = require('role.builder');
 var roleAll = require('role.all');
 
 var wall_building = require('algorithms.walls');
+var buildup = require('buildup');
 
 var cleaner = require('cleaner');
-var buildup = require('buildup');
 var status = require('tools.status');
 
 var once = require('tools.runonce');
@@ -17,7 +17,6 @@ const _roles = {
     'upgrader': roleUpgrader,
     'harvester': roleHarvester
 }
-
 
 
 function _init(){

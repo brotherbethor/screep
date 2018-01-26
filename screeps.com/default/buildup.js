@@ -148,7 +148,7 @@ module.exports = {
                         return false;
                     }
                     console.log('trying to build an extension in radius ' + radius);
-                    var build_places = algorithms_extensions.walk_around_center(spawn_point, radius, 'extension');
+                    var build_places = algorithms_extensions.walkAroundCenter(spawn_point, radius, 'extension');
                     // we just look at every place to build every time.
                     // things might be gone and allow building by now...
                     // and we only build on terrain that is empty.

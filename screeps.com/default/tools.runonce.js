@@ -25,6 +25,7 @@ module.exports = {
         Memory.spawn_id = Game.spawns['Spawn1'].id;
         Memory.last_built_creeper = -1;
         Memory.last_source_active = -1;
+        Memory.pokemon_index = -1;
     },
 
     walls: function() {

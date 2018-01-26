@@ -17,8 +17,7 @@ module.exports = {
 	    		'construction_sites_walls': Game.spawns.Spawn1.room.find(FIND_CONSTRUCTION_SITES, {filter: {structureType: STRUCTURE_WALL}}).length,
 	    		'construction_sites_ramparts': Game.spawns.Spawn1.room.find(FIND_CONSTRUCTION_SITES, {filter: {structureType: STRUCTURE_RAMPART}}).length,
 	    		'construction_sites': Game.spawns.Spawn1.room.find(FIND_CONSTRUCTION_SITES).length,
-	    		'rcl': Game.spawns.Spawn1.room.controller.level,
-	    		'pokemon_index': typeof Memory.current_state.pokemon_index == 'undefined' ? 0 : Memory.current_state.pokemon_index
+	    		'rcl': Game.spawns.Spawn1.room.controller.level
     		}
     	Memory.current_state = current_state;
     	if (Game.time % 100 == 0) {

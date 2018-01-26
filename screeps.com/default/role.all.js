@@ -15,7 +15,14 @@ var creeper_numbers_per_rcl = {
         'builder': [4, 0]}        
 };
 
-function next_creeper_round_robin(){
+
+function _nextPokemonName(){
+    Memory.pokemon_index = (1 + Memory.pokemon_index) % pokemon_names.length;
+    return pokemon_names[Memory.current_state.pokemon_index];
+}
+
+
+function _nextCreeperRoundRobin(){
     var build_index = Memory.last_built_creeper + 1;
     if (build_index == creeper_build_order.length) {
         build_index = 0;
@@ -24,10 +31,10 @@ function next_creeper_round_robin(){
     return creeper_build_order[build_index];
 }
 
-function next_creeper_type_to_build(creepers){
+function _nextCreeperTypeToBuild(creepers){
     creeper_numbers = creeper_numbers_per_rcl[Memory.current_state.rcl];
     for (i = 0; i < creeper_build_order.length; i++){
-        role = next_creeper_round_robin();
+        role = _nextCreeperRoundRobin();
         [role_max, role_min] = creeper_numbers[role];
         var role_count = creepers[role];
         if (role_count < role_max){
@@ -81,12 +88,8 @@ var roleAll = {
         // harvesters are the most important thing so far
         // first, the default: build all creeps in round robin fashion
 
-        function re_assign_creepers(
-            no_construction_sites, upgraders, harvesters, builders, max_energy){
-        }
-
         if (true) {
-            var role = next_creeper_type_to_build(
+            var role = _nextCreeperTypeToBuild(
                 {'harvester': harvesters.length, 'upgrader': upgraders.length, 'builder': builders.length}
             );
             if (creeper_build_order.indexOf(role) < 0){return null;};
@@ -106,9 +109,7 @@ var roleAll = {
             		var p_attributes = profile[1];
             		var energy_available = Memory.current_state["energy_available"];
 	            	if ((energy_available >= p_energy) && (spawned == false)) {
-                        if (Memory.current_state.pokemon_index == pokemon_names.length) {Memory.current_state.pokemon_index = 0;}
-			            var newName = pokemon_names[Memory.current_state.pokemon_index];
-                        Memory.current_state.pokemon_index += 1;
+			            var newName = _nextPokemonName();
 			            console.log('Spawning new ' + role + ': ' + newName + " with " + p_attributes);
 			            Game.spawns['Spawn1'].spawnCreep(p_attributes, newName, 
 			                {memory: {
