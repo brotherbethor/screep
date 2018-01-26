@@ -39,35 +39,8 @@ function _draw(map){
 }
 
 
-// used for testing
-function walkAroundCenterDrawVersion(center, radius, map){
-    var pos = [0, 0]; // init
-    pos[X] = center[X] + radius;
-    pos[Y] = center[Y] + radius;
-    [DOWN, UP].forEach(function(direction) {
-        [X,Y].forEach(function(axis){
-            for (step=0;step < radius*2;step++){
-                pos[axis] += direction;
-                // change after testing
-               console.log(pos, center, (pos[X] - center[X]) % 2)
-               if ((pos[X] - center[X]) % 2 == 0){
-                   map = _paint(pos, map);
-               }
-            }
-        });
-    });
-}
-
-
-// test this module
-function _testDrawing(){
-	var map = _asciiBox();
-	map = walkAroundCenterDrawVersion([7,7], 2, map);
-	_draw(map);
-}
-
-
-function walkAroundCenter(center, radius, structure_type){
+function walkAroundCenter(center, radius, structure_type, test=false){
+    var map = test == true ? _asciiBox() : undefined;
     var spacing = spacing_by_structure_type[structure_type];
     var pos = [0, 0]; // init
     pos[X] = center[X] + radius;
@@ -78,12 +51,21 @@ function walkAroundCenter(center, radius, structure_type){
             for (step=0;step < radius*2;step++){
                 pos[axis] += direction;
                if (Math.abs((pos[Y] - center[Y]) % 2) == spacing){
-                   fields.push([pos[X], pos[Y]]);
+                   if (test == true) {map = _paint(pos, map);}
+                   else {fields.push([pos[X], pos[Y]]);}
                }
             }
         });
     });
     return fields;
 }
+
+
+// test this module
+function _testDrawing(){
+    map = walkAroundCenterDrawVersion([7,7], 2, 'test', true);
+    _draw(map);
+}
+
 
 exports.walkAroundCenter = walkAroundCenter;
