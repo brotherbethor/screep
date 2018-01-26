@@ -102,7 +102,7 @@ module.exports = {
             _buildFortification(Memory.saved_ramparts, STRUCTURE_RAMPART);
             Memory.ramparts_were_constructed = true;
             Memory.construct_ramparts = false;
-            console.log('Built first batch of ramparts.');
+            console.log('Built ' + Memory.saved_ramparts.length + ' ramparts.');
         } else {
             // what now??
         }
