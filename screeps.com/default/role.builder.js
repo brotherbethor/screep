@@ -3,29 +3,25 @@ var roleBuilder = {
     run: function(creep) {
         if(creep.memory.building && creep.carry.energy == 0) {
             creep.memory.building = false;
-            creep.say('🔄 harvest');
         }
         if(!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
             creep.memory.building = true;
-            creep.say('🚧 build');
         }
 
         if(creep.memory.building) {
             if (creep.room.name != Game.spawns.Spawn1.room.name){
-                creep.moveTo(Game.spawns.Spawn1.pos, {visualizePathStyle: 
-                        {strokeWidth: 1.0, stroke: '#00ff00'}});
+                creep.moveTo(Game.spawns.Spawn1.pos);
             } else {
                 var target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
                 if(creep.build(target) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {visualizePathStyle: 
-                        {strokeWidth: 1.0, opacity: 0.0, stroke: '#00ff00'}});
+                    creep.moveTo(target);
                 }
             }
         }
         else {
             var source = Game.getObjectById(creep.memory.target_source);
             if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+                creep.moveTo(source);
             }
         }
         if (creep.ticksToLive <= 10) {

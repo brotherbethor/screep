@@ -1,9 +1,9 @@
-const room_size = 50;
-const wall_offset = 2;
-const X = 0;
-const Y = 1;
-const UP = 1;
-const DOWN = -1;
+const _ROOM_SIZE = 50;
+const _WALL_OFFSET = 2;
+const _X = 0;
+const _Y = 1;
+const _UP = 1;
+const _DOWN = -1;
 
 function _removeFlags() {
     for (var f in Game.flags) {Game.flags[f].remove();}
@@ -33,7 +33,7 @@ function _collectRampartPositions(known_exits){
         if (e.size >= 10) {
             // if x is the same for start and end, the exit must be
             // on the y-axis
-            var direction = e.start.x == e.end.x ? Y : X;
+            var direction = e.start.x == e.end.x ? _Y : _X;
             var half = {
                 'x': Math.round((e.start.x + e.end.x) / 2),
                 'y': Math.round((e.start.y + e.end.y) / 2)
@@ -41,8 +41,8 @@ function _collectRampartPositions(known_exits){
             // from the half point, add and subtract one to get
             // a 3-tiles big rampart. that should be enough for now.
             ramparts.push([half.x, half.y]);
-            ramparts.push([(half.x + (direction == X ? 1 : 0)), (half.y + (direction == Y ? 1 : 0))]);
-            ramparts.push([(half.x - (direction == X ? 1 : 0)), (half.y - (direction == Y ? 1 : 0))]);
+            ramparts.push([(half.x + (direction == _X ? 1 : 0)), (half.y + (direction == _Y ? 1 : 0))]);
+            ramparts.push([(half.x - (direction == _X ? 1 : 0)), (half.y - (direction == _Y ? 1 : 0))]);
         }
     }
     return ramparts;
@@ -94,28 +94,28 @@ function _buildExitData() {
         exit_active: false,
         exits: {}
     };
-    var y = wall_offset;
-    var x = wall_offset;
+    var y = _WALL_OFFSET;
+    var x = _WALL_OFFSET;
     // console.log('>>>' + exit_data.exit_count + ':' + exit_data.exit_active);
     // TODO this probably has a nicer way of doing it ...
-    while (x < (room_size - wall_offset -1)) {
-        exit_data = _checkTile(x, y, X, exit_data);
-        x += UP;
+    while (x < (_ROOM_SIZE - _WALL_OFFSET -1)) {
+        exit_data = _checkTile(x, y, _X, exit_data);
+        x += _UP;
     }
     exit_data.exit_active = false;
-    while (y < (room_size - wall_offset -1)) {
-        exit_data = _checkTile(x, y, Y, exit_data);
-        y += UP;
+    while (y < (_ROOM_SIZE - _WALL_OFFSET -1)) {
+        exit_data = _checkTile(x, y, _Y, exit_data);
+        y += _UP;
     }
     exit_data.exit_active = false;
-    while (x > wall_offset) {
-        exit_data = _checkTile(x, y, X, exit_data);
-        x += DOWN;
+    while (x > _WALL_OFFSET) {
+        exit_data = _checkTile(x, y, _X, exit_data);
+        x += _DOWN;
     }
     exit_data.exit_active = false;
-    while (y > wall_offset) {
-        exit_data = _checkTile(x, y, Y, exit_data);
-        y += DOWN;
+    while (y > _WALL_OFFSET) {
+        exit_data = _checkTile(x, y, _Y, exit_data);
+        y += _DOWN;
     }
     exit_data.exit_active = false;
     return exit_data;
@@ -141,23 +141,23 @@ function _markWall(x, y, ramparts){
 
 
 function _markWalls(ramparts) {
-    var y = wall_offset;
-    var x = wall_offset;
-    while (x < (room_size - wall_offset -1)) {
+    var y = _WALL_OFFSET;
+    var x = _WALL_OFFSET;
+    while (x < (_ROOM_SIZE - _WALL_OFFSET -1)) {
         _markWall(x, y, ramparts);
-        x += UP;
+        x += _UP;
     }
-    while (y < (room_size - wall_offset -1)) {
+    while (y < (_ROOM_SIZE - _WALL_OFFSET -1)) {
         _markWall(x, y, ramparts);
-        y += UP;
+        y += _UP;
     }
-    while (x > wall_offset) {
+    while (x > _WALL_OFFSET) {
         _markWall(x, y, ramparts);
-        x += DOWN;
+        x += _DOWN;
     }
-    while (y > wall_offset) {
+    while (y > _WALL_OFFSET) {
         _markWall(x, y, ramparts);
-        y += DOWN;
+        y += _DOWN;
     }
 }
 

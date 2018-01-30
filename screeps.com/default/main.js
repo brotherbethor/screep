@@ -6,7 +6,7 @@ var roleAll = require('role.all');
 var wall_building = require('algorithms.walls');
 var buildup = require('buildup');
 
-var cleaner = require('cleaner');
+var cleaner = require('tools.cleaner');
 var status = require('tools.status');
 
 var once = require('tools.runonce');

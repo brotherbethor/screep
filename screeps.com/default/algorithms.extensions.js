@@ -1,10 +1,10 @@
-const X = 0;
-const Y = 1;
+const _X = 0;
+const  _Y = 1;
 
-const UP = 1;
-const DOWN = -1;
+const _UP = 1;
+const _DOWN = -1;
 
-const spacing_by_structure_type = {
+const _SPACING_BY_STRUCTURE_TYPE = {
     'test': 0,
     'extension': 0,
     'road': 1
@@ -22,7 +22,7 @@ function _asciiBox(){
 
 // used for testing
 function _paint(coords, map){
-    map[coords[X]][coords[Y]] = 'X';
+    map[coords[X]][coords[ _Y]] = 'X';
     return map;
 }
 
@@ -41,18 +41,18 @@ function _draw(map){
 
 function walkAroundCenter(center, radius, structure_type, test=false){
     var map = test == true ? _asciiBox() : undefined;
-    var spacing = spacing_by_structure_type[structure_type];
+    var spacing = _SPACING_BY_STRUCTURE_TYPE[structure_type];
     var pos = [0, 0]; // init
-    pos[X] = center[X] + radius;
-    pos[Y] = center[Y] + radius;
+    pos[_X] = center[_X] + radius;
+    pos[ _Y] = center[ _Y] + radius;
     var fields = [];
-    [DOWN, UP].forEach(function(direction) {
-        [X,Y].forEach(function(axis){
+    [_DOWN, _UP].forEach(function(direction) {
+        [ _X, _Y].forEach(function(axis){
             for (step=0;step < radius*2;step++){
                 pos[axis] += direction;
-               if (Math.abs((pos[Y] - center[Y]) % 2) == spacing){
+               if (Math.abs((pos[Y] - center[ _Y]) % 2) == spacing){
                    if (test == true) {map = _paint(pos, map);}
-                   else {fields.push([pos[X], pos[Y]]);}
+                   else {fields.push([pos[ _X], pos[ _Y]]);}
                }
             }
         });
